@@ -13,6 +13,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 # 要想调用键盘按键操作需要引入keys包
 from selenium.webdriver.common.keys import Keys
 import http.client
+
 http.client._is_legal_header_name = re.compile(rb'[^\s][^:\r\n]*').fullmatch
 
 seconds_to_wait = 10
@@ -130,27 +131,38 @@ def scrawl(args, i, dt, cookie):
 
         一百八十天 = 今天 + relativedelta(months=-180)
         一百八十天_list = list(filter(lambda x: 一百八十天 < datetime.datetime.fromtimestamp(x["time"]) < 今天, promo_detail_list))
-        一百八十天_min = min(一百八十天_list, key=lambda x: x["price"])
+        一百八十天_min = min(一百八十天_list or [{"price": 0, "time": None, "msg": []}], key=lambda x: x["price"])
 
         九十天 = 今天 + relativedelta(days=-90)
         九十天_list = list(filter(lambda x: 九十天 < datetime.datetime.fromtimestamp(x["time"]) < 今天, promo_detail_list))
-        九十天_min = min(九十天_list, key=lambda x: x["price"])
+        九十天_min = min(九十天_list or [{"price": 0, "time": None, "msg": []}], key=lambda x: x["price"])
 
         六十天 = 今天 + relativedelta(days=-60)
         六十天_list = list(filter(lambda x: 六十天 < datetime.datetime.fromtimestamp(x["time"]) < 今天, promo_detail_list))
-        六十天_min = min(六十天_list, key=lambda x: x["price"])
+        六十天_min = min(六十天_list or [{"price": 0, "time": None, "msg": []}], key=lambda x: x["price"])
 
         三十天 = 今天 + relativedelta(days=-30)
         三十天_list = list(filter(lambda x: 三十天 < datetime.datetime.fromtimestamp(x["time"]) < 今天, promo_detail_list))
-        三十天_min = min(三十天_list, key=lambda x: x["price"])
+        print(三十天_list)
+        三十天_min = min(三十天_list or [{"price": 0, "time": None, "msg": []}], key=lambda x: x["price"])
 
         dt.loc[i] = {
             "品牌": title, "名称": title, "链接": url,
-            "180时间": datetime.datetime.fromtimestamp(一百八十天_min["time"]), "180价格": 一百八十天_min["price"]/100, "180条件": msg_to_str(一百八十天_min["msg"]),
-            "90时间": datetime.datetime.fromtimestamp(九十天_min["time"]), "90价格": 九十天_min["price"]/100, "90条件": msg_to_str(九十天_min["msg"]),
-            "60时间": datetime.datetime.fromtimestamp(六十天_min["time"]), "60价格": 六十天_min["price"]/100, "60条件": msg_to_str(六十天_min["msg"]),
-            "30时间": datetime.datetime.fromtimestamp(三十天_min["time"]), "30价格": 三十天_min["price"]/100, "30条件": msg_to_str(三十天_min["msg"]),
-            "当前时间": datetime.datetime.fromtimestamp(今天_min["time"]), "当前价格": 今天_min["price"]/100, "当前条件": msg_to_str(今天_min["msg"]),
+            "180时间": datetime.datetime.fromtimestamp(一百八十天_min["time"]) if 一百八十天_min["time"] else '',
+            "180价格": (一百八十天_min["price"] / 100) or '',
+            "180条件": msg_to_str(一百八十天_min["msg"]),
+            "90时间": datetime.datetime.fromtimestamp(九十天_min["time"]) if 九十天_min["time"] else '',
+            "90价格": (九十天_min["price"] / 100) or '',
+            "90条件": msg_to_str(九十天_min["msg"]),
+            "60时间": datetime.datetime.fromtimestamp(六十天_min["time"]) if 六十天_min["time"] else '',
+            "60价格": (六十天_min["price"] / 100) or '',
+            "60条件": msg_to_str(六十天_min["msg"]),
+            "30时间": datetime.datetime.fromtimestamp(三十天_min["time"]) if 三十天_min["time"] else '',
+            "30价格": (三十天_min["price"] / 100) or '',
+            "30条件": msg_to_str(三十天_min["msg"]),
+            "当前时间": datetime.datetime.fromtimestamp(今天_min["time"]) if 今天_min["time"] else '',
+            "当前价格": (今天_min["price"] / 100) or '',
+            "当前条件": msg_to_str(今天_min["msg"]),
         }
 
     logging.debug("successfully got price")
