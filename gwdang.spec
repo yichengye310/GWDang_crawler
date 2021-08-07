@@ -5,7 +5,7 @@ block_cipher = None
 
 
 a = Analysis(['gwdang.py'],
-             pathex=['C:\\Users\\sz_yy\\OneDrive\\Desktop\\GwdangSpider-master'],
+             pathex=['C:\\Users\\sz_yy\\OneDrive\\Desktop\\GWDang_crawler'],
              binaries=[],
              datas=[],
              hiddenimports=[],

@@ -127,7 +127,9 @@ def scrawl(args, i, dt, cookie):
 
         今天 = datetime.datetime.today()
         今天 = 今天.replace(hour=0, minute=0, second=0, microsecond=0)
-        今天_min = promo_detail_list[-1]
+        明天 = 今天 + relativedelta(days=1)
+        今天_list = list(filter(lambda x: 今天 <= datetime.datetime.fromtimestamp(x["time"]) < 明天, promo_detail_list))
+        今天_min = min(今天_list or [{"price": 0, "time": None, "msg": []}])
 
         一百八十天 = 今天 + relativedelta(months=-180)
         一百八十天_list = list(filter(lambda x: 一百八十天 < datetime.datetime.fromtimestamp(x["time"]) < 今天, promo_detail_list))
@@ -143,7 +145,6 @@ def scrawl(args, i, dt, cookie):
 
         三十天 = 今天 + relativedelta(days=-30)
         三十天_list = list(filter(lambda x: 三十天 < datetime.datetime.fromtimestamp(x["time"]) < 今天, promo_detail_list))
-        print(三十天_list)
         三十天_min = min(三十天_list or [{"price": 0, "time": None, "msg": []}], key=lambda x: x["price"])
 
         dt.loc[i] = {
